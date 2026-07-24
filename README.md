@@ -1,6 +1,6 @@
 # 許氏注音輸入法打字練習軟體 (Hsu's Zhuyin Keyboard Typing Tutor)
 
-![Version](https://img.shields.io/badge/version-v1.1.0-blue.svg)
+![Version](https://img.shields.io/badge/version-v1.2.0-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Web-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-MIT-purple.svg)
 
@@ -24,12 +24,14 @@
 - **關卡 1：鍵位與口訣特訓** — 音似、形似、順位、手順單鍵記憶。
 - **關卡 2：聲韻組合拼音特訓** — 單字「聲母 + 韻母 + 聲調」完整打法。
 - **關卡 3：高頻實用詞彙練習** — 生活詞彙與四字成語實戰。
-- **關卡 4：日常短句盲打特訓** — 中文句子流暢輸入盲打特訓。
+- **關卡 4：日常短句盲打特訓** — 中文句子流暢輸入盲打特訓（支援全句與句中英文單字無縫對齊）。
 - **自訂文章模式** — 自由匯入文章進行客製化特訓。
 
-### 4. 歷史成績紀錄與歸零清空
-- 自動將每次練習結果（WPM, CPM, 正確率, 連擊數, 耗時）紀錄於 `localStorage`。
-- 提供「📜 歷史成績」檢視視窗與「🗑️ 清空歸零」功能。
+### 4. 寬幅歷史成績紀錄與打字速度參考指標
+- **1080px 寬幅介面**：彈窗支援寬幅 Layout，輕鬆瀏覽詳細歷史成績。
+- **指標說明**：標明 **WPM** (每分打中文字數) 與 **CPM** (每分鍵盤按鍵數)。
+- **📊 速度參考指標**：內建新手入門 (10~20 WPM)、中級流利 (30~50 WPM) 與高級高手 (60+ WPM) 參考指標表格。
+- **數據管理**：提供「📜 歷史成績」檢視視窗與「🗑️ 清空歸零」功能，並對紀錄進行隔離保護。
 
 ### 5. 沉浸式擬真打字音效
 採用 **Web Audio API** 即時動態合成青軸打字音效、錯誤警示音與通關音樂。
@@ -39,7 +41,7 @@
 ## 📁 專案目錄架構
 
 ```
-C:\Gemini\HsuZhuyinTutor\
+C:\myGitHub\HsuZhuyinTutor\
 ├── index.html               # 打字練習器 UI 與架構
 ├── launch.bat               # 一鍵啟動腳本
 ├── HsuZhuyinTutor.exe       # C# .NET 8 桌面應用程式啟動檔
