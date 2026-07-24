@@ -1,0 +1,16 @@
+# Build outputs
+bin/
+obj/
+*.pdb
+*.deps.json
+*.runtimeconfig.json
+
+# IDE and Editor files
+.vs/
+.vscode/
+*.user
+*.suo
+
+# OS generated files
+.DS_Store
+Thumbs.db

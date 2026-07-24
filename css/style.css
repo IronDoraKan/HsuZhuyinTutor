@@ -1,0 +1,581 @@
+/* ==========================================================================
+   許氏注音打字練習軟體 - 現代暗黑玻璃擬真 UI 樣式 (css/style.css)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+
+:root {
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --card-border: rgba(255, 255, 255, 0.1);
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    
+    --accent-phonetic: #10b981;  /* 綠色 - 音似 */
+    --accent-visual: #3b82f6;    /* 藍色 - 形似 */
+    --accent-group: #a855f7;     /* 紫色 - 順位與組別 */
+    --accent-tone: #f59e0b;      /* 黃色 - 手順與聲調 */
+    --accent-func: #64748b;      /* 灰色 - 功能鍵 */
+
+    --glow-target: #f43f5e;       /* 閃爍高亮目標鍵 */
+    --glow-pressed: #06b6d4;      /* 實體按下狀態 */
+
+    --font-main: 'Noto Sans TC', 'Outfit', system-ui, sans-serif;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    background: var(--bg-gradient);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* 頁首 Header */
+.app-header {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--card-border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 22px;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+.logo-text h1 {
+    font-size: 20px;
+    font-weight: 800;
+    background: linear-gradient(to right, #ffffff, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logo-text p {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: none;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+}
+
+.btn-danger {
+    background: rgba(244, 63, 94, 0.2);
+    border: 1px solid rgba(244, 63, 94, 0.4);
+    color: #fda4af;
+}
+
+.btn-danger:hover {
+    background: rgba(244, 63, 94, 0.4);
+    color: #ffffff;
+}
+
+/* 主容器 Main Layout */
+.app-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 頂部選單與關卡 Progress Panel */
+.lesson-bar {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.select-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+select {
+    background: #0f172a;
+    color: var(--text-primary);
+    border: 1px solid var(--card-border);
+    padding: 10px 16px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-main);
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+}
+
+select:focus {
+    border-color: #8b5cf6;
+}
+
+.progress-track {
+    flex: 1;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #10b981, #3b82f6);
+    transition: width 0.3s ease;
+}
+
+/* 數據顯示區域 Stats Bar */
+.stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.stat-info .stat-val {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.stat-info .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* 核心打字展示區域 Display Stage */
+.display-stage {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 36px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    min-height: 200px;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.target-display {
+    font-size: 54px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #ffffff;
+    transition: transform 0.1s ease;
+}
+
+.target-display.is-error {
+    color: #f43f5e;
+    animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}
+
+.zhuyin-hint {
+    font-size: 20px;
+    color: #cbd5e1;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 6px 20px;
+    border-radius: 20px;
+}
+
+.key-sequence-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.key-step-box {
+    background: rgba(15, 23, 42, 0.8);
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    padding: 10px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+}
+
+.key-step-box.is-current {
+    border-color: #f43f5e;
+    box-shadow: 0 0 16px rgba(244, 63, 94, 0.5);
+    transform: scale(1.1);
+}
+
+.key-step-box.is-done {
+    opacity: 0.4;
+    border-color: #10b981;
+}
+
+.step-key {
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.step-symbol {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* 口訣提示卡片 Mnemonic Card */
+.mnemonic-card {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-left: 5px solid #8b5cf6;
+    border-radius: var(--radius-md);
+    padding: 14px 20px;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.card-key {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.card-body {
+    font-size: 14px;
+    color: #cbd5e1;
+}
+
+/* 色塊 Badge */
+.badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    color: #ffffff;
+}
+.badge.cat-phonetic { background: var(--accent-phonetic); }
+.badge.cat-visual { background: var(--accent-visual); }
+.badge.cat-group { background: var(--accent-group); }
+.badge.cat-tone { background: var(--accent-tone); }
+
+/* 虛擬鍵盤區域 Keyboard Section */
+.keyboard-section {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.keyboard-legend {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+.hsu-keyboard-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 960px;
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Keycap 鍵帽設計 */
+.keycap {
+    background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 0 #0f172a, inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    width: 78px;
+    height: 72px;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.keycap.cat-phonetic { border-top: 3px solid var(--accent-phonetic); }
+.keycap.cat-visual { border-top: 3px solid var(--accent-visual); }
+.keycap.cat-group { border-top: 3px solid var(--accent-group); }
+.keycap.cat-tone { border-top: 3px solid var(--accent-tone); }
+
+.key-letter {
+    font-size: 16px;
+    font-weight: 800;
+    color: #f1f5f9;
+}
+
+.key-zhuyin {
+    font-size: 18px;
+    font-weight: 900;
+    color: #ffffff;
+    text-align: right;
+}
+
+.key-mnemonic {
+    font-size: 10px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 目標提示發光動畫 */
+.keycap.is-target {
+    border-color: var(--glow-target) !important;
+    background: linear-gradient(180deg, #9f1239 0%, #881337 100%) !important;
+    animation: targetPulse 1s infinite alternate;
+}
+
+@keyframes targetPulse {
+    0% { box-shadow: 0 0 12px rgba(244, 63, 94, 0.6), 0 4px 0 #0f172a; }
+    100% { box-shadow: 0 0 24px rgba(244, 63, 94, 0.9), 0 4px 0 #0f172a; }
+}
+
+/* 按下效果 (Pressed state) */
+.keycap.is-pressed {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #0f172a, inset 0 0 10px rgba(6, 182, 212, 0.8) !important;
+    background: #0891b2 !important;
+    border-color: #22d3ee !important;
+}
+
+/* 空白鍵 Space Bar */
+.keycap-space {
+    width: 380px;
+    height: 54px;
+    align-items: center;
+    justify-content: center;
+}
+
+.keycap-space .key-letter {
+    font-size: 14px;
+}
+
+/* 彈窗 Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 999;
+}
+
+.modal-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-box {
+    background: #1e293b;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    width: 90%;
+    max-width: 540px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal-box-large {
+    max-width: 820px;
+    max-height: 85vh;
+}
+
+textarea {
+    background: #0f172a;
+    border: 1px solid var(--card-border);
+    color: #ffffff;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    height: 140px;
+    font-family: var(--font-main);
+    resize: none;
+    outline: none;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* 歷史成績 Modal 樣式 */
+.history-summary {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #cbd5e1;
+}
+
+.history-table-wrapper {
+    overflow-y: auto;
+    max-height: 380px;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: left;
+}
+
+.history-table th {
+    background: #0f172a;
+    color: var(--text-secondary);
+    padding: 12px 14px;
+    position: sticky;
+    top: 0;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.history-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #f1f5f9;
+}
+
+.history-table tr:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
