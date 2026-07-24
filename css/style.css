@@ -514,9 +514,12 @@ select:focus {
     gap: 16px;
 }
 
+/* 寬幅 Modal 提升閱讀空間 */
 .modal-box-large {
-    max-width: 860px;
-    max-height: 85vh;
+    width: 95%;
+    max-width: 1080px;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 textarea {
@@ -558,7 +561,7 @@ textarea {
 
 .history-table-wrapper {
     overflow-y: auto;
-    max-height: 380px;
+    max-height: 280px;
     border: 1px solid var(--card-border);
     border-radius: var(--radius-md);
 }
@@ -587,4 +590,47 @@ textarea {
 
 .history-table tr:hover {
     background: rgba(255, 255, 255, 0.04);
+}
+
+/* 打字速度參考指標 Benchmark Table */
+.benchmark-section {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-top: 12px;
+}
+
+.benchmark-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.benchmark-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: left;
+}
+
+.benchmark-table th {
+    background: rgba(30, 41, 59, 0.8);
+    color: var(--text-secondary);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.benchmark-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: #cbd5e1;
+}
+
+.benchmark-table tr:last-child td {
+    border-bottom: none;
 }

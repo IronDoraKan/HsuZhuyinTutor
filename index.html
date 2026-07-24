@@ -134,17 +134,20 @@
         </div>
     </div>
 
-    <!-- 歷史紀錄彈窗 Modal -->
+    <!-- 歷史紀錄彈窗 Modal (寬幅 Layout) -->
     <div id="history-modal" class="modal-overlay">
         <div class="modal-box modal-box-large">
             <h3>📜 歷史打字成績與練習紀錄</h3>
             <div id="history-summary" class="history-summary">
                 載入中...
             </div>
+            
             <!-- 指標提示說明條 -->
             <div class="history-legend-note">
                 💡 <strong>指標說明：</strong> <strong>WPM</strong> (Words/Min) = 每分鐘打中文字數 &nbsp;｜&nbsp; <strong>CPM</strong> (Chars/Min) = 每分鐘鍵盤按鍵數 (許氏注音約 2.5~3 鍵/字)
             </div>
+
+            <!-- 歷史紀錄表格區 -->
             <div class="history-table-wrapper">
                 <table class="history-table">
                     <thead>
@@ -163,7 +166,43 @@
                     </tbody>
                 </table>
             </div>
-            <div class="modal-footer" style="justify-content: space-between; align-items: center;">
+
+            <!-- 📊 打字速度參考指標卡片 -->
+            <div class="benchmark-section">
+                <h4 class="benchmark-title">📊 打字速度參考指標（中文注音盲打）</h4>
+                <table class="benchmark-table">
+                    <thead>
+                        <tr>
+                            <th>熟練程度</th>
+                            <th>WPM (每分字數)</th>
+                            <th>CPM (每分鍵數)</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong style="color: #cbd5e1;">🌱 新手入門</strong></td>
+                            <td>10 ~ 20 WPM</td>
+                            <td>30 ~ 60 CPM</td>
+                            <td>尚在熟悉鍵位與許氏口訣</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: #60a5fa;">🚀 中級流利</strong></td>
+                            <td>30 ~ 50 WPM</td>
+                            <td>90 ~ 150 CPM</td>
+                            <td>已熟悉鍵位，手指能自然盲打</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: #34d399;">🔥 高級高手</strong></td>
+                            <td>60+ WPM</td>
+                            <td>180+ CPM</td>
+                            <td>非常流暢，達到專業打字與日常高效率溝通水準</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer" style="justify-content: space-between; align-items: center; margin-top: 10px;">
                 <button id="history-clear-btn" class="btn btn-danger">🗑️ 清空歸零所有數據</button>
                 <button id="history-modal-close" class="btn btn-primary">關閉</button>
             </div>
