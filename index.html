@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>許氏注音輸入法打字練習軟體 | Hsu Zhuyin Typing Tutor</title>
+    <meta name="description" content="專為自然輸入法許氏鍵盤 (Hsu Zhuyin Layout) 設計的互動打字練習軟體。包含音似、形似、順位與手順四大記憶口訣、全漢字 20000+ 字注音自動對照、分階關卡、實體/虛擬鍵盤閃爍對照、歷史成績紀錄與歸零清空及即時打字速率統計。">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- 頁首 Header -->
+    <header class="app-header">
+        <div class="logo-area">
+            <div class="logo-icon">許</div>
+            <div class="logo-text">
+                <h1>許氏注音輸入法打字練習器</h1>
+                <p>Hsu's Zhuyin Keyboard Typing Tutor</p>
+            </div>
+        </div>
+        <div class="header-controls">
+            <button id="sound-toggle-btn" class="btn">🔊 音效：開</button>
+            <button id="history-modal-btn" class="btn">📜 歷史成績</button>
+            <button id="custom-modal-btn" class="btn">📝 自訂文章</button>
+            <button id="restart-btn" class="btn btn-primary">🔄 重新開始</button>
+        </div>
+    </header>
+
+    <div class="app-container">
+
+        <!-- 頂部關卡選擇與進度條 -->
+        <section class="lesson-bar">
+            <div class="select-group">
+                <label for="level-select" style="font-weight: 700; color: #94a3b8;">關卡：</label>
+                <select id="level-select" aria-label="選擇主要關卡"></select>
+                
+                <label for="sub-lesson-select" style="font-weight: 700; color: #94a3b8;">單元：</label>
+                <select id="sub-lesson-select" aria-label="選擇子練習單元"></select>
+            </div>
+            <div class="progress-track" title="單元完成度">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+        </section>
+
+        <!-- 即時打字統計數據 Panel -->
+        <section class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-info">
+                    <div id="stat-wpm" class="stat-val">0</div>
+                    <div class="stat-label">字數 / 分 (WPM)</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⌨️</div>
+                <div class="stat-info">
+                    <div id="stat-cpm" class="stat-val">0</div>
+                    <div class="stat-label">鍵數 / 分 (CPM)</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-info">
+                    <div id="stat-accuracy" class="stat-val">100%</div>
+                    <div class="stat-label">打字正確率</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-info">
+                    <div id="stat-combo" class="stat-val">0</div>
+                    <div class="stat-label">當前連擊 (Combo)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 核心題目與輸入指引 Stage -->
+        <main class="display-stage">
+            <div id="target-display" class="target-display">載入中...</div>
+            <div id="zhuyin-hint" class="zhuyin-hint">--</div>
+
+            <!-- 下一個應按按鍵提示序列 -->
+            <div id="key-sequence-container" class="key-sequence-container"></div>
+        </main>
+
+        <!-- 記憶口訣與指引提示卡片 -->
+        <section id="mnemonic-card" class="mnemonic-card">
+            <div id="mnemonic-content">
+                <div class="card-header">
+                    <span class="badge cat-phonetic">記憶口訣卡片</span>
+                    <span class="card-key">請將滑鼠移至鍵盤或直接按鍵</span>
+                </div>
+                <div class="card-body">將滑鼠懸停於下方虛擬鍵盤上，即可即時查看許氏注音音/形/手順記憶口訣！</div>
+            </div>
+        </section>
+
+        <!-- 虛擬鍵盤對照區 Keyboard Section -->
+        <section class="keyboard-section">
+            <div class="keyboard-legend">
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: var(--accent-phonetic);"></div>
+                    <span>字音相似 (B/P/M/F/D/T/N/L/G/K/H/J/R/Z/S/E)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: var(--accent-visual);"></div>
+                    <span>字形相似 (W=ㄠ, V=ㄑ, M=ㄢ, K=ㄤ, L=ㄥ/ㄦ, Y=ㄚ, X=ㄨ, U=ㄩ)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: var(--accent-group);"></div>
+                    <span>順位與組別 (ZAS / JVC)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: var(--accent-tone);"></div>
+                    <span>Home-Row 手順聲調 (Space/D/F/J/S/G/H)</span>
+                </div>
+            </div>
+
+            <!-- 動態鍵盤容器 -->
+            <div id="keyboard-container" style="width: 100%; display: flex; justify-content: center;"></div>
+        </section>
+
+    </div>
+
+    <!-- 自訂文章彈窗 Modal -->
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>📝 匯入自訂文章或練習詞庫</h3>
+            <p style="font-size: 13px; color: var(--text-secondary);">請貼上您想練習的文章或詞彙（系統支援 20,000+ 全漢字自動注音轉換）：</p>
+            <textarea id="custom-text-input" placeholder="例如：恭喜完成本單元！許氏鍵盤整合中英文打字..."></textarea>
+            <div class="modal-footer">
+                <button id="custom-modal-close" class="btn">取消</button>
+                <button id="custom-modal-save" class="btn btn-primary">開始自訂練習</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 歷史紀錄彈窗 Modal -->
+    <div id="history-modal" class="modal-overlay">
+        <div class="modal-box modal-box-large">
+            <h3>📜 歷史打字成績與練習紀錄</h3>
+            <div id="history-summary" class="history-summary">
+                載入中...
+            </div>
+            <div class="history-table-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>練習時間</th>
+                            <th>關卡與單元</th>
+                            <th>WPM</th>
+                            <th>CPM</th>
+                            <th>正確率</th>
+                            <th>最大連擊</th>
+                            <th>耗時</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <!-- 動態渲染歷史紀錄 -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer" style="justify-content: space-between; align-items: center;">
+                <button id="history-clear-btn" class="btn btn-danger">🗑️ 清空歸零所有數據</button>
+                <button id="history-modal-close" class="btn btn-primary">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 腳本載入 (順序：漢字注音字典 -> 對照表 -> 課程 -> UI -> 音效 -> 主控) -->
+    <script src="js/zhuyin_dict.js"></script>
+    <script src="js/hsu_mapping.js"></script>
+    <script src="js/lessons.js"></script>
+    <script src="js/keyboard_ui.js"></script>
+    <script src="js/audio_system.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
