@@ -81,6 +81,7 @@ C:\myGitHub\HsuZhuyinTutor\
 - **資料儲存**：Browser `localStorage`
 
 ---
+<img width="1615" height="1191" alt="image" src="https://github.com/user-attachments/assets/e1de1b14-9653-4c58-8222-2c63a4103c31" />
 
 ## 📄 授權條款 (License)
 
