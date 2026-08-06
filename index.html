@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>許氏注音輸入法打字練習軟體 | Hsu Zhuyin Typing Tutor</title>
-    <meta name="description" content="專為自然輸入法許氏鍵盤 (Hsu Zhuyin Layout) 設計的互動打字練習軟體。包含音似、形似、順位與手順四大記憶口訣、全漢字 20000+ 字注音自動對照、分階關卡、實體/虛擬鍵盤閃爍對照、歷史成績紀錄與歸零清空及即時打字速率統計。">
+    <title>注音盲打雙模式打字練習器 (許氏 / 大千標準鍵盤) | Zhuyin Typing Tutor</title>
+    <meta name="description" content="包含「許氏注音鍵盤」與「大千標準注音鍵盤」雙模式盲打特訓。提供音似/形似/手順記憶口訣、20,000+ 漢字注音自動對照、分階關卡、即時速率統計與自訂文章練習。">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,13 +12,20 @@
     <!-- 頁首 Header -->
     <header class="app-header">
         <div class="logo-area">
-            <div class="logo-icon">許</div>
+            <div class="logo-icon">注</div>
             <div class="logo-text">
-                <h1>許氏注音輸入法打字練習器</h1>
-                <p>Hsu's Zhuyin Keyboard Typing Tutor</p>
+                <h1>注音盲打雙模式打字練習器</h1>
+                <p>Zhuyin Typing Tutor — 許氏鍵盤 & 大千標準鍵盤 雙模式特訓</p>
             </div>
         </div>
         <div class="header-controls">
+            <div class="layout-select-group" style="display: flex; align-items: center; gap: 6px;">
+                <label for="layout-mode-select" style="font-weight: 700; color: #94a3b8; font-size: 13px;">⌨️ 鍵盤模式：</label>
+                <select id="layout-mode-select" aria-label="選擇注音鍵盤對照模式" style="font-weight: 700; border-color: #8b5cf6; background: #1e1b4b; color: #a5b4fc;">
+                    <option value="hsu">許氏注音鍵盤 (Hsu Layout)</option>
+                    <option value="dachen">大千標準鍵盤 (Dachen Layout)</option>
+                </select>
+            </div>
             <button id="sound-toggle-btn" class="btn">🔊 音效：開</button>
             <button id="history-modal-btn" class="btn">📜 歷史成績</button>
             <button id="custom-modal-btn" class="btn">📝 自訂文章</button>
@@ -144,7 +151,7 @@
             
             <!-- 指標提示說明條 -->
             <div class="history-legend-note">
-                💡 <strong>指標說明：</strong> <strong>WPM</strong> (Words/Min) = 每分鐘打中文字數 &nbsp;｜&nbsp; <strong>CPM</strong> (Chars/Min) = 每分鐘鍵盤按鍵數 (許氏注音約 2.5~3 鍵/字)
+                💡 <strong>指標說明：</strong> <strong>WPM</strong> (Words/Min) = 每分鐘打中文字數 &nbsp;｜&nbsp; <strong>CPM</strong> (Chars/Min) = 每分鐘鍵盤按鍵數 (許氏注音約 2.5 鍵/字，大千標準約 3 鍵/字)
             </div>
 
             <!-- 歷史紀錄表格區 -->
@@ -153,6 +160,7 @@
                     <thead>
                         <tr>
                             <th>練習時間</th>
+                            <th>鍵盤模式</th>
                             <th>關卡與單元</th>
                             <th>WPM (字/分)</th>
                             <th>CPM (鍵/分)</th>

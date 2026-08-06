@@ -1,6 +1,5 @@
 /**
- * 許氏注音輸入法 (Hsu's Zhuyin Keyboard Layout) 核心對照表與轉換器
- * 發明人：許聞廉博士 (自然輸入法)
+ * 注音輸入法 (許氏鍵盤 / 大千標準鍵盤) 核心對照表與轉換器
  */
 
 const HSU_KEYBOARD_LAYOUT = [
@@ -37,7 +36,59 @@ const HSU_KEYBOARD_LAYOUT = [
     { key: 'M', zhuyin: ['ㄇ', 'ㄢ'], cat: 'visual', desc: '字音/字形', mnemonic: 'M 發音為「ㄇ」 (m)；M 閉合結構像「ㄢ」', finger: 'right-index' }
 ];
 
-// 聲調按鍵定義 (Home Row Tones)
+// 大千標準注音鍵盤 (Dachen Standard Zhuyin Layout)
+const DACHEN_KEYBOARD_LAYOUT = [
+    // 第一排 Row 1 (數字列)
+    { key: '1', zhuyin: ['ㄅ'], cat: 'phonetic', desc: '1 鍵 ➔ ㄅ', mnemonic: '標準大千鍵盤 1 鍵為 ㄅ', finger: 'left-pinky' },
+    { key: '2', zhuyin: ['ㄉ'], cat: 'phonetic', desc: '2 鍵 ➔ ㄉ', mnemonic: '標準大千鍵盤 2 鍵為 ㄉ', finger: 'left-ring' },
+    { key: '3', zhuyin: ['三聲'], cat: 'tone', desc: '3 鍵 ➔ 三聲 ˇ', mnemonic: '標準大千鍵盤 3 鍵為三聲 ˇ', finger: 'left-middle' },
+    { key: '4', zhuyin: ['四聲'], cat: 'tone', desc: '4 鍵 ➔ 四聲 ˋ', mnemonic: '標準大千鍵盤 4 鍵為四聲 ˋ', finger: 'left-index' },
+    { key: '5', zhuyin: ['ㄓ'], cat: 'phonetic', desc: '5 鍵 ➔ ㄓ', mnemonic: '標準大千鍵盤 5 鍵為 ㄓ', finger: 'left-index' },
+    { key: '6', zhuyin: ['二聲'], cat: 'tone', desc: '6 鍵 ➔ 二聲 ˊ', mnemonic: '標準大千鍵盤 6 鍵為二聲 ˊ', finger: 'right-index' },
+    { key: '7', zhuyin: ['輕聲'], cat: 'tone', desc: '7 鍵 ➔ 輕聲 ˙', mnemonic: '標準大千鍵盤 7 鍵為輕聲 ˙', finger: 'right-index' },
+    { key: '8', zhuyin: ['ㄚ'], cat: 'phonetic', desc: '8 鍵 ➔ ㄚ', mnemonic: '標準大千鍵盤 8 鍵為 ㄚ', finger: 'right-middle' },
+    { key: '9', zhuyin: ['ㄞ'], cat: 'phonetic', desc: '9 鍵 ➔ ㄞ', mnemonic: '標準大千鍵盤 9 鍵為 ㄞ', finger: 'right-ring' },
+    { key: '0', zhuyin: ['ㄢ'], cat: 'phonetic', desc: '0 鍵 ➔ ㄢ', mnemonic: '標準大千鍵盤 0 鍵為 ㄢ', finger: 'right-pinky' },
+    { key: '-', zhuyin: ['ㄦ'], cat: 'phonetic', desc: '- 鍵 ➔ ㄦ', mnemonic: '標準大千鍵盤 - 鍵為 ㄦ', finger: 'right-pinky' },
+
+    // 第二排 Row 2 (QWERTY 列)
+    { key: 'Q', zhuyin: ['ㄆ'], cat: 'phonetic', desc: 'Q 鍵 ➔ ㄆ', mnemonic: '標準大千鍵盤 Q 鍵為 ㄆ', finger: 'left-pinky' },
+    { key: 'W', zhuyin: ['ㄊ'], cat: 'phonetic', desc: 'W 鍵 ➔ ㄊ', mnemonic: '標準大千鍵盤 W 鍵為 ㄊ', finger: 'left-ring' },
+    { key: 'E', zhuyin: ['ㄍ'], cat: 'phonetic', desc: 'E 鍵 ➔ ㄍ', mnemonic: '標準大千鍵盤 E 鍵為 ㄍ', finger: 'left-middle' },
+    { key: 'R', zhuyin: ['ㄐ'], cat: 'phonetic', desc: 'R 鍵 ➔ ㄐ', mnemonic: '標準大千鍵盤 R 鍵為 ㄐ', finger: 'left-index' },
+    { key: 'T', zhuyin: ['ㄔ'], cat: 'phonetic', desc: 'T 鍵 ➔ ㄔ', mnemonic: '標準大千鍵盤 T 鍵為 ㄔ', finger: 'left-index' },
+    { key: 'Y', zhuyin: ['ㄗ'], cat: 'phonetic', desc: 'Y 鍵 ➔ ㄗ', mnemonic: '標準大千鍵盤 Y 鍵為 ㄗ', finger: 'right-index' },
+    { key: 'U', zhuyin: ['ㄧ'], cat: 'phonetic', desc: 'U 鍵 ➔ ㄧ', mnemonic: '標準大千鍵盤 U 鍵為 ㄧ', finger: 'right-index' },
+    { key: 'I', zhuyin: ['ㄛ'], cat: 'phonetic', desc: 'I 鍵 ➔ ㄛ', mnemonic: '標準大千鍵盤 I 鍵為 ㄛ', finger: 'right-middle' },
+    { key: 'O', zhuyin: ['ㄟ'], cat: 'phonetic', desc: 'O 鍵 ➔ ㄟ', mnemonic: '標準大千鍵盤 O 鍵為 ㄟ', finger: 'right-ring' },
+    { key: 'P', zhuyin: ['ㄣ'], cat: 'phonetic', desc: 'P 鍵 ➔ ㄣ', mnemonic: '標準大千鍵盤 P 鍵為 ㄣ', finger: 'right-pinky' },
+
+    // 第三排 Row 3 (Home Row)
+    { key: 'A', zhuyin: ['ㄇ'], cat: 'phonetic', desc: 'A 鍵 ➔ ㄇ', mnemonic: '標準大千鍵盤 A 鍵為 ㄇ', finger: 'left-pinky' },
+    { key: 'S', zhuyin: ['ㄋ'], cat: 'phonetic', desc: 'S 鍵 ➔ ㄋ', mnemonic: '標準大千鍵盤 S 鍵為 ㄋ', finger: 'left-ring' },
+    { key: 'D', zhuyin: ['ㄎ'], cat: 'phonetic', desc: 'D 鍵 ➔ ㄎ', mnemonic: '標準大千鍵盤 D 鍵為 ㄎ', finger: 'left-middle' },
+    { key: 'F', zhuyin: ['ㄑ'], cat: 'phonetic', desc: 'F 鍵 ➔ ㄑ', mnemonic: '標準大千鍵盤 F 鍵為 ㄑ', finger: 'left-index' },
+    { key: 'G', zhuyin: ['ㄕ'], cat: 'phonetic', desc: 'G 鍵 ➔ ㄕ', mnemonic: '標準大千鍵盤 G 鍵為 ㄕ', finger: 'left-index' },
+    { key: 'H', zhuyin: ['ㄘ'], cat: 'phonetic', desc: 'H 鍵 ➔ ㄘ', mnemonic: '標準大千鍵盤 H 鍵為 ㄘ', finger: 'right-index' },
+    { key: 'J', zhuyin: ['ㄨ'], cat: 'phonetic', desc: 'J 鍵 ➔ ㄨ', mnemonic: '標準大千鍵盤 J 鍵為 ㄨ', finger: 'right-index' },
+    { key: 'K', zhuyin: ['ㄜ'], cat: 'phonetic', desc: 'K 鍵 ➔ ㄜ', mnemonic: '標準大千鍵盤 K 鍵為 ㄜ', finger: 'right-middle' },
+    { key: 'L', zhuyin: ['ㄠ'], cat: 'phonetic', desc: 'L 鍵 ➔ ㄠ', mnemonic: '標準大千鍵盤 L 鍵為 ㄠ', finger: 'right-ring' },
+    { key: ';', zhuyin: ['ㄤ'], cat: 'phonetic', desc: '; 鍵 ➔ ㄤ', mnemonic: '標準大千鍵盤 ; 鍵為 ㄤ', finger: 'right-pinky' },
+
+    // 第四排 Row 4 (Bottom Row)
+    { key: 'Z', zhuyin: ['ㄈ'], cat: 'phonetic', desc: 'Z 鍵 ➔ ㄈ', mnemonic: '標準大千鍵盤 Z 鍵為 ㄈ', finger: 'left-pinky' },
+    { key: 'X', zhuyin: ['ㄌ'], cat: 'phonetic', desc: 'X 鍵 ➔ ㄌ', mnemonic: '標準大千鍵盤 X 鍵為 ㄌ', finger: 'left-ring' },
+    { key: 'C', zhuyin: ['ㄏ'], cat: 'phonetic', desc: 'C 鍵 ➔ ㄏ', mnemonic: '標準大千鍵盤 C 鍵為 ㄏ', finger: 'left-middle' },
+    { key: 'V', zhuyin: ['ㄒ'], cat: 'phonetic', desc: 'V 鍵 ➔ ㄒ', mnemonic: '標準大千鍵盤 V 鍵為 ㄒ', finger: 'left-index' },
+    { key: 'B', zhuyin: ['ㄖ'], cat: 'phonetic', desc: 'B 鍵 ➔ ㄖ', mnemonic: '標準大千鍵盤 B 鍵為 ㄖ', finger: 'left-index' },
+    { key: 'N', zhuyin: ['ㄙ'], cat: 'phonetic', desc: 'N 鍵 ➔ ㄙ', mnemonic: '標準大千鍵盤 N 鍵為 ㄙ', finger: 'right-index' },
+    { key: 'M', zhuyin: ['ㄩ'], cat: 'phonetic', desc: 'M 鍵 ➔ ㄩ', mnemonic: '標準大千鍵盤 M 鍵為 ㄩ', finger: 'right-index' },
+    { key: ',', zhuyin: ['ㄝ'], cat: 'phonetic', desc: ', 鍵 ➔ ㄝ', mnemonic: '標準大千鍵盤 , 鍵為 ㄝ', finger: 'right-middle' },
+    { key: '.', zhuyin: ['ㄡ'], cat: 'phonetic', desc: '. 鍵 ➔ ㄡ', mnemonic: '標準大千鍵盤 . 鍵為 ㄡ', finger: 'right-ring' },
+    { key: '/', zhuyin: ['ㄥ'], cat: 'phonetic', desc: '/ 鍵 ➔ ㄥ', mnemonic: '標準大千鍵盤 / 鍵為 ㄥ', finger: 'right-pinky' }
+];
+
+// 聲調按鍵定義 (許氏)
 const TONE_KEYS = {
     '': 'Space',    // 一聲 (預設/空白鍵)
     'ˉ': 'Space',   // 一聲
@@ -47,21 +98,42 @@ const TONE_KEYS = {
     '˙': 'S'        // 輕聲
 };
 
+// 聲調按鍵定義 (大千)
+const DACHEN_TONE_KEYS = {
+    '': 'Space',
+    'ˉ': 'Space',
+    'ˊ': '6',
+    'ˇ': '3',
+    'ˋ': '4',
+    '˙': '7'
+};
+
 // 37個注音符號對應之主要許氏英文字母
 const ZHUYIN_TO_KEY = {
-    // 聲母
     'ㄅ': 'B', 'ㄆ': 'P', 'ㄇ': 'M', 'ㄈ': 'F',
     'ㄉ': 'D', 'ㄊ': 'T', 'ㄋ': 'N', 'ㄌ': 'L',
     'ㄍ': 'G', 'ㄎ': 'K', 'ㄏ': 'H',
     'ㄐ': 'J', 'ㄑ': 'V', 'ㄒ': 'C',
     'ㄓ': 'J', 'ㄔ': 'V', 'ㄕ': 'C', 'ㄖ': 'R',
     'ㄗ': 'Z', 'ㄘ': 'A', 'ㄙ': 'S',
-    // 介音
     'ㄧ': 'E', 'ㄨ': 'X', 'ㄩ': 'U',
-    // 韻母
     'ㄚ': 'Y', 'ㄛ': 'H', 'ㄜ': 'G', 'ㄝ': 'E',
     'ㄞ': 'I', 'ㄟ': 'O', 'ㄠ': 'W', 'ㄡ': 'O',
     'ㄢ': 'M', 'ㄣ': 'N', 'ㄤ': 'K', 'ㄥ': 'L', 'ㄦ': 'L'
+};
+
+// 37個注音符號對應之大千標準鍵盤按鍵
+const DACHEN_ZHUYIN_TO_KEY = {
+    'ㄅ': '1', 'ㄆ': 'Q', 'ㄇ': 'A', 'ㄈ': 'Z',
+    'ㄉ': '2', 'ㄊ': 'W', 'ㄋ': 'S', 'ㄌ': 'X',
+    'ㄍ': 'E', 'ㄎ': 'D', 'ㄏ': 'C',
+    'ㄐ': 'R', 'ㄑ': 'F', 'ㄒ': 'V',
+    'ㄓ': '5', 'ㄔ': 'T', 'ㄕ': 'G', 'ㄖ': 'B',
+    'ㄗ': 'Y', 'ㄘ': 'H', 'ㄙ': 'N',
+    'ㄧ': 'U', 'ㄨ': 'J', 'ㄩ': 'M',
+    'ㄚ': '8', 'ㄛ': 'I', 'ㄜ': 'K', 'ㄝ': ',',
+    'ㄞ': '9', 'ㄟ': 'O', 'ㄠ': 'L', 'ㄡ': '.',
+    'ㄢ': '0', 'ㄣ': 'P', 'ㄤ': ';', 'ㄥ': '/', 'ㄦ': '-'
 };
 
 // 注音符號分類資訊
@@ -116,21 +188,22 @@ function getZhuyinForChar(char) {
 }
 
 /**
- * 將單一中文音節（例如 "ㄒㄩˇ"、"ㄏㄠˇ"、"ㄓㄨㄥ"）解析並轉換為許氏按鍵序列
- * @param {string} zhuyinSyllable - 例如 "ㄏㄠˇ" 或 "ㄓㄨㄥ"
- * @returns {Array<{key: string, symbol: string, desc: string}>} - 按鍵序列
+ * 將單一中文音節轉換為指定鍵盤模式 (hsu 或 dachen) 之按鍵序列
  */
-function parseZhuyinToHsuKeys(zhuyinSyllable) {
+function parseZhuyinToHsuKeys(zhuyinSyllable, layoutMode = 'hsu') {
     if (!zhuyinSyllable) return [];
 
+    const isDachen = layoutMode === 'dachen';
+    const toneMap = isDachen ? DACHEN_TONE_KEYS : TONE_KEYS;
+    const zhuyinMap = isDachen ? DACHEN_ZHUYIN_TO_KEY : ZHUYIN_TO_KEY;
+
     let symbols = [];
-    let tone = '一聲'; // 預設一聲
+    let tone = '一聲';
     let toneKey = 'Space';
 
-    // 檢查最後一個字元是否為聲調
     const lastChar = zhuyinSyllable.slice(-1);
-    if (TONE_KEYS.hasOwnProperty(lastChar)) {
-        toneKey = TONE_KEYS[lastChar];
+    if (toneMap.hasOwnProperty(lastChar)) {
+        toneKey = toneMap[lastChar];
         if (lastChar === 'ˊ') tone = '二聲';
         else if (lastChar === 'ˇ') tone = '三聲';
         else if (lastChar === 'ˋ') tone = '四聲';
@@ -143,7 +216,7 @@ function parseZhuyinToHsuKeys(zhuyinSyllable) {
     const keySequence = [];
 
     symbols.forEach(symbol => {
-        const key = ZHUYIN_TO_KEY[symbol];
+        const key = zhuyinMap[symbol];
         if (key) {
             keySequence.push({
                 key: key,
@@ -153,35 +226,27 @@ function parseZhuyinToHsuKeys(zhuyinSyllable) {
         }
     });
 
-    // 加入聲調按鍵
     let toneSymbolDisplay = '一聲 (Space)';
-    if (toneKey === 'D') toneSymbolDisplay = '二聲 (D)';
-    else if (toneKey === 'F') toneSymbolDisplay = '三聲 (F)';
-    else if (toneKey === 'J') toneSymbolDisplay = '四聲 (J)';
-    else if (toneKey === 'S') toneSymbolDisplay = '輕聲 (S)';
+    if (toneKey === 'Space') toneSymbolDisplay = '一聲 (Space)';
+    else toneSymbolDisplay = `${tone} (${toneKey})`;
 
     keySequence.push({
         key: toneKey,
         symbol: toneSymbolDisplay,
-        desc: `手順聲調按鍵 [${toneKey}]`
+        desc: `聲調按鍵 [${toneKey}]`
     });
 
     return keySequence;
 }
 
 /**
- * 將整句中文句子或自訂文章分解為各字對應之注音與許氏按鍵序列
- * 支援 20,000+ 個 CJK 中文字字典自動查詢與同步解析
- * @param {string} sentence - 中文句子
- * @param {string} guideStr - 可選，注音導引字串
- * @returns {Array<{char: string, zhuyin: string, keys: Array<{key: string, symbol: string}>}>}
+ * 將整句中文句子或自訂文章分解為各字對應之注音與按鍵序列
  */
-function parseSentenceToCharItems(sentence, guideStr) {
+function parseSentenceToCharItems(sentence, guideStr, layoutMode = 'hsu') {
     if (!sentence) return [];
 
     const charList = sentence.split('');
 
-    // 過濾 guideStr 中非注音符號之文字 (避免 Home Row 英文單字幹擾 guide 索引)
     let zhuyinTokens = [];
     if (guideStr && guideStr.trim()) {
         zhuyinTokens = guideStr.trim().split(/\s+/).filter(tok => 
@@ -193,11 +258,11 @@ function parseSentenceToCharItems(sentence, guideStr) {
     let zhuyinIdx = 0;
 
     charList.forEach((char) => {
-        // 1. 空白、換行與標點符號
-        if (/[.,!?:;"'。，！？；：「」『』（）\s\r\n]/.test(char)) {
+        // 1. 空白、換行與標點符號/特殊符號
+        if (/[.,!?:;"'。，！？；：「」『』（）《》〈〉【】〔〕…—～·•\s\r\n`~!@#$%^&*()_+\-=\[\]{}|\\;:'",.<>/?“”—’‘、]/.test(char)) {
             items.push({
                 char: char === '\n' ? '↵' : char,
-                zhuyin: char === ' ' ? '空白' : '標點/換行',
+                zhuyin: char === ' ' ? '空白' : '標點/符號',
                 keys: [{ key: 'Space', symbol: char === ' ' ? 'Space' : char }]
             });
             return;
@@ -223,7 +288,7 @@ function parseSentenceToCharItems(sentence, guideStr) {
             return;
         }
 
-        // 4. 中文字元：優先使用 20,000+ 字注音字典，若有 guideTokens 且有效則優先匹配
+        // 4. 中文字元
         let zhuyin = '';
         if (zhuyinTokens.length > 0 && zhuyinIdx < zhuyinTokens.length) {
             zhuyin = zhuyinTokens[zhuyinIdx];
@@ -237,7 +302,7 @@ function parseSentenceToCharItems(sentence, guideStr) {
         }
 
         if (zhuyin) {
-            const keys = parseZhuyinToHsuKeys(zhuyin);
+            const keys = parseZhuyinToHsuKeys(zhuyin, layoutMode);
             items.push({
                 char: char,
                 zhuyin: zhuyin,
@@ -259,8 +324,11 @@ function parseSentenceToCharItems(sentence, guideStr) {
 // 匯出模組以利全域存取
 window.HsuMapping = {
     LAYOUT: HSU_KEYBOARD_LAYOUT,
+    DACHEN_LAYOUT: DACHEN_KEYBOARD_LAYOUT,
     TONE_KEYS: TONE_KEYS,
+    DACHEN_TONE_KEYS: DACHEN_TONE_KEYS,
     ZHUYIN_TO_KEY: ZHUYIN_TO_KEY,
+    DACHEN_ZHUYIN_TO_KEY: DACHEN_ZHUYIN_TO_KEY,
     ZHUYIN_META: ZHUYIN_META,
     getZhuyinForChar: getZhuyinForChar,
     parseZhuyinToHsuKeys: parseZhuyinToHsuKeys,

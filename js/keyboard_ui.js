@@ -1,5 +1,6 @@
 /**
- * 許氏注音鍵盤 UI 互動邏輯與動態高亮 (js/keyboard_ui.js)
+ * 注音鍵盤 UI 互動邏輯與動態高亮 (js/keyboard_ui.js)
+ * 支援 許氏注音鍵盤 (Hsu) 與 大千標準鍵盤 (Dachen) 動態切換
  */
 
 class HsuKeyboardUI {
@@ -7,30 +8,44 @@ class HsuKeyboardUI {
         this.container = document.getElementById(containerId);
         this.activeKeys = new Set();
         this.targetKeys = new Set();
-        this.initKeyboard();
+        this.layoutMode = 'hsu';
+        this.initKeyboard('hsu');
     }
 
-    initKeyboard() {
+    initKeyboard(layoutMode = 'hsu') {
         if (!this.container) return;
+        this.layoutMode = layoutMode;
 
         this.container.innerHTML = '';
         const keyboardWrapper = document.createElement('div');
-        keyboardWrapper.className = 'hsu-keyboard-wrapper';
+        keyboardWrapper.className = `hsu-keyboard-wrapper layout-${layoutMode}`;
 
-        // 定義標準 QWERTY 三排按鍵佈局
-        const rows = [
-            ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-            ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-            ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
-        ];
+        const isDachen = layoutMode === 'dachen';
+        const layoutData = isDachen ? HsuMapping.DACHEN_LAYOUT : HsuMapping.LAYOUT;
 
-        // 建立第一到三排
+        let rows = [];
+        if (isDachen) {
+            rows = [
+                ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-'],
+                ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';'],
+                ['Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/']
+            ];
+        } else {
+            rows = [
+                ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+                ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
+            ];
+        }
+
+        // 建立各排按鍵
         rows.forEach((rowKeys, rowIndex) => {
             const rowDiv = document.createElement('div');
             rowDiv.className = `keyboard-row row-${rowIndex + 1}`;
 
             rowKeys.forEach(keyChar => {
-                const keyInfo = HsuMapping.LAYOUT.find(k => k.key === keyChar);
+                const keyInfo = layoutData.find(k => k.key === keyChar);
                 if (keyInfo) {
                     const keyCap = this.createKeyCap(keyInfo);
                     rowDiv.appendChild(keyCap);
@@ -40,7 +55,7 @@ class HsuKeyboardUI {
             keyboardWrapper.appendChild(rowDiv);
         });
 
-        // 建立第四排 (Space bar - 一聲)
+        // 建立 Space bar (一聲)
         const spaceRowDiv = document.createElement('div');
         spaceRowDiv.className = 'keyboard-row row-space';
         
@@ -60,7 +75,7 @@ class HsuKeyboardUI {
 
     createKeyCap(keyInfo) {
         const keyCap = document.createElement('div');
-        keyCap.className = `keycap cat-${keyInfo.cat} finger-${keyInfo.finger}`;
+        keyCap.className = `keycap cat-${keyInfo.cat || 'phonetic'} finger-${keyInfo.finger || 'index'}`;
         keyCap.dataset.key = keyInfo.key;
 
         const letter = document.createElement('div');
@@ -69,17 +84,17 @@ class HsuKeyboardUI {
 
         const zhuyin = document.createElement('div');
         zhuyin.className = 'key-zhuyin';
-        zhuyin.textContent = keyInfo.zhuyin.join(' / ');
+        zhuyin.textContent = Array.isArray(keyInfo.zhuyin) ? keyInfo.zhuyin.join(' / ') : keyInfo.zhuyin;
 
         const desc = document.createElement('div');
         desc.className = 'key-mnemonic';
-        desc.textContent = keyInfo.desc;
+        desc.textContent = keyInfo.desc || '';
 
         keyCap.appendChild(letter);
         keyCap.appendChild(zhuyin);
         keyCap.appendChild(desc);
 
-        // 滑鼠 hover/click 事件
+        // 滑鼠 hover 事件
         keyCap.addEventListener('mouseenter', () => {
             if (window.appInstance && window.appInstance.showMnemonicCard) {
                 window.appInstance.showMnemonicCard(keyInfo);
@@ -92,7 +107,7 @@ class HsuKeyboardUI {
     // 實體按鍵按下效果
     pressKey(key) {
         const normalizedKey = this.normalizeKey(key);
-        const el = this.container.querySelector(`[data-key="${normalizedKey}"]`);
+        const el = this.container.querySelector(`[data-key="${CSS.escape(normalizedKey)}"]`);
         if (el) {
             el.classList.add('is-pressed');
             setTimeout(() => el.classList.remove('is-pressed'), 180);
@@ -101,14 +116,12 @@ class HsuKeyboardUI {
 
     // 提示使用者應該按哪一個鍵
     highlightTargetKeys(keys) {
-        // 先清除前一次提示
         this.clearTargetHighlights();
-
         if (!keys || keys.length === 0) return;
 
         keys.forEach(k => {
             const normalizedKey = this.normalizeKey(k);
-            const el = this.container.querySelector(`[data-key="${normalizedKey}"]`);
+            const el = this.container.querySelector(`[data-key="${CSS.escape(normalizedKey)}"]`);
             if (el) {
                 el.classList.add('is-target');
             }
@@ -120,7 +133,6 @@ class HsuKeyboardUI {
         highlighted.forEach(el => el.classList.remove('is-target'));
     }
 
-    // 轉化按鍵字元 (例如 'space' -> 'Space', 'a' -> 'A')
     normalizeKey(key) {
         if (!key) return '';
         if (key === ' ' || key.toLowerCase() === 'space') return 'Space';

@@ -252,11 +252,14 @@ select:focus {
 }
 
 .target-display {
-    font-size: 54px;
+    font-size: 48px;
     font-weight: 900;
     letter-spacing: 2px;
     color: #ffffff;
-    transition: transform 0.1s ease;
+    word-break: break-all;
+    max-width: 100%;
+    line-height: 1.4;
+    transition: font-size 0.2s ease, transform 0.1s ease;
 }
 
 .target-display.is-error {
@@ -399,6 +402,24 @@ select:focus {
     max-width: 960px;
 }
 
+.hsu-keyboard-wrapper.layout-dachen {
+    max-width: 1020px;
+}
+
+.hsu-keyboard-wrapper.layout-dachen .keycap {
+    width: 72px;
+    height: 68px;
+    padding: 4px 6px;
+}
+
+.hsu-keyboard-wrapper.layout-dachen .key-letter {
+    font-size: 14px;
+}
+
+.hsu-keyboard-wrapper.layout-dachen .key-zhuyin {
+    font-size: 17px;
+}
+
 .keyboard-row {
     display: flex;
     justify-content: center;
@@ -514,10 +535,10 @@ select:focus {
     gap: 16px;
 }
 
-/* 寬幅 Modal 提升閱讀空間 */
+/* 寬幅 Modal 提升閱讀空間 (+15% 畫面幅寬) */
 .modal-box-large {
-    width: 95%;
-    max-width: 1080px;
+    width: 96%;
+    max-width: 1250px;
     max-height: 90vh;
     overflow-y: auto;
 }

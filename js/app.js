@@ -9,6 +9,7 @@ class HsuTutorApp {
         this.sound = new SoundSystem();
 
         // 狀態變數
+        this.currentLayoutMode = 'hsu'; // 'hsu' 或 'dachen'
         this.currentLevel = 'level1';
         this.currentLessonIdx = 0;
         this.currentLesson = null;
@@ -31,6 +32,7 @@ class HsuTutorApp {
 
         // DOM 元素引用
         this.dom = {
+            layoutModeSelect: document.getElementById('layout-mode-select'),
             levelSelect: document.getElementById('level-select'),
             subLessonSelect: document.getElementById('sub-lesson-select'),
             targetDisplay: document.getElementById('target-display'),
@@ -75,6 +77,16 @@ class HsuTutorApp {
     bindEvents() {
         // 全域鍵盤按下監聽
         window.addEventListener('keydown', (e) => this.handleKeyDown(e));
+
+        // 鍵盤模式變更 (許氏 vs 大千)
+        if (this.dom.layoutModeSelect) {
+            this.dom.layoutModeSelect.addEventListener('change', (e) => {
+                this.currentLayoutMode = e.target.value;
+                this.keyboard.initKeyboard(this.currentLayoutMode);
+                this.renderCurrentItem();
+                if (document.activeElement) document.activeElement.blur();
+            });
+        }
 
         // 選擇選單變更
         this.dom.levelSelect.addEventListener('change', (e) => {
@@ -189,12 +201,12 @@ class HsuTutorApp {
         // 解析當前題目（單字、詞彙、或長句）
         if (item.sentence || item.phrase) {
             // 長句或短詞
-            this.currentCharItems = HsuMapping.parseSentenceToCharItems(item.sentence || item.phrase, item.guide);
+            this.currentCharItems = HsuMapping.parseSentenceToCharItems(item.sentence || item.phrase, item.guide, this.currentLayoutMode);
         } else if (item.char || item.text) {
             // 單字
             const charStr = item.char || item.text;
-            if (item.keys) {
-                // 已指定按鍵 (如 Level 1 單鍵)
+            if (item.keys && this.currentLayoutMode === 'hsu') {
+                // 已指定按鍵 (如 Level 1 單鍵) 且為許氏模式
                 const keyObjs = item.keys.map(k => ({
                     key: k,
                     symbol: k === 'Space' ? '一聲 (Space)' : (ZHUYIN_META[item.zhuyin] ? ZHUYIN_META[item.zhuyin].desc : k)
@@ -205,10 +217,10 @@ class HsuTutorApp {
                     keys: keyObjs
                 }];
             } else {
-                const keys = HsuMapping.parseZhuyinToHsuKeys(item.zhuyin);
+                const keys = HsuMapping.parseZhuyinToHsuKeys(item.zhuyin || charStr, this.currentLayoutMode);
                 this.currentCharItems = [{
                     char: charStr,
-                    zhuyin: item.zhuyin || '',
+                    zhuyin: item.zhuyin || charStr,
                     keys: keys
                 }];
             }
@@ -236,13 +248,23 @@ class HsuTutorApp {
         const item = this.currentLesson.items[this.currentItemIdx];
         const fullText = item.sentence || item.phrase || item.text || item.char || '';
 
+        // 動態調整 targetDisplay 的字體大小以利閱讀
+        const totalChars = this.currentCharItems.length;
+        if (totalChars > 30) {
+            this.dom.targetDisplay.style.fontSize = '26px';
+        } else if (totalChars > 18) {
+            this.dom.targetDisplay.style.fontSize = '36px';
+        } else {
+            this.dom.targetDisplay.style.fontSize = '48px';
+        }
+
         let htmlText = '';
         if (this.currentCharItems.length > 1) {
             this.currentCharItems.forEach((cObj, idx) => {
                 if (idx < this.currentCharIdx) {
                     htmlText += `<span style="color: #10b981; opacity: 0.5;">${cObj.char}</span>`;
                 } else if (idx === this.currentCharIdx) {
-                    htmlText += `<span style="color: #f43f5e; text-decoration: underline; font-size: 1.1em;">${cObj.char}</span>`;
+                    htmlText += `<span class="is-current-char" style="color: #f43f5e; text-decoration: underline; font-size: 1.1em; background: rgba(244, 63, 94, 0.15); border-radius: 4px; padding: 0 2px;">${cObj.char}</span>`;
                 } else {
                     htmlText += `<span style="color: #ffffff;">${cObj.char}</span>`;
                 }
@@ -264,7 +286,9 @@ class HsuTutorApp {
             this.keyboard.highlightTargetKeys([nextKey]);
 
             // 自動更新動態口訣卡片
-            const keyInfo = HsuMapping.LAYOUT.find(k => k.key === (nextKey === 'Space' ? 'Space' : nextKey.toUpperCase()));
+            const isDachen = this.currentLayoutMode === 'dachen';
+            const layoutData = isDachen ? HsuMapping.DACHEN_LAYOUT : HsuMapping.LAYOUT;
+            const keyInfo = layoutData.find(k => k.key === (nextKey === 'Space' ? 'Space' : nextKey.toUpperCase()));
             if (keyInfo) this.showMnemonicCard(keyInfo);
         }
     }
@@ -292,6 +316,16 @@ class HsuTutorApp {
         if (e.altKey || e.ctrlKey || e.metaKey || e.key === 'Tab') return;
         if (this.dom.customTextModal.classList.contains('is-open')) return;
         if (this.dom.historyModal.classList.contains('is-open')) return;
+
+        // 防止空白鍵 (Space) 觸發瀏覽器捲動或觸發當前 Focus 按鈕的預設點擊事件
+        if (e.key === ' ' || e.code === 'Space') {
+            e.preventDefault();
+        }
+
+        // 移除按鈕焦點，防止空白鍵或 Enter 觸發按鈕重複點擊
+        if (document.activeElement && (document.activeElement.tagName === 'BUTTON' || document.activeElement.tagName === 'SELECT')) {
+            document.activeElement.blur();
+        }
 
         let pressedKey = e.key;
         if (pressedKey === ' ') pressedKey = 'Space';
@@ -392,12 +426,14 @@ class HsuTutorApp {
 
     showMnemonicCard(keyInfo) {
         if (!keyInfo) return;
+        const modeTitle = this.currentLayoutMode === 'dachen' ? '大千標準鍵盤' : '許氏注音鍵盤';
+        const zhuyinStr = Array.isArray(keyInfo.zhuyin) ? keyInfo.zhuyin.join(' / ') : keyInfo.zhuyin;
         this.dom.mnemonicContent.innerHTML = `
             <div class="card-header">
-                <span class="badge cat-${keyInfo.cat}">${keyInfo.desc || '許氏鍵盤'}</span>
-                <span class="card-key">${keyInfo.key} 鍵 ➔ ${keyInfo.zhuyin.join(' / ')}</span>
+                <span class="badge cat-${keyInfo.cat || 'phonetic'}">${modeTitle}</span>
+                <span class="card-key">${keyInfo.key} 鍵 ➔ ${zhuyinStr}</span>
             </div>
-            <div class="card-body">${keyInfo.mnemonic || '許氏注音音/形聯想記憶法'}</div>
+            <div class="card-body">${keyInfo.mnemonic || keyInfo.desc || '鍵盤按鍵與注音對照'}</div>
         `;
     }
 
@@ -432,10 +468,13 @@ class HsuTutorApp {
         const records = this.getHistoryRecords();
         const levelTitle = this.dom.levelSelect.options[this.dom.levelSelect.selectedIndex].text;
         const subTitle = this.dom.subLessonSelect.options[this.dom.subLessonSelect.selectedIndex].text;
+        const layoutTitle = this.currentLayoutMode === 'dachen' ? '大千標準鍵盤' : '許氏注音鍵盤';
 
         const newRecord = {
             id: Date.now(),
             date: new Date().toLocaleString('zh-TW', { hour12: false }),
+            layoutMode: this.currentLayoutMode,
+            layoutTitle: layoutTitle,
             level: `${levelTitle} - ${subTitle}`,
             wpm: stats.wpm,
             cpm: stats.cpm,
@@ -453,7 +492,7 @@ class HsuTutorApp {
     renderHistoryUI() {
         const records = this.getHistoryRecords();
         if (records.length === 0) {
-            this.dom.historyTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-muted); padding: 20px;">尚無練習紀錄。趕快開始練習吧！</td></tr>`;
+            this.dom.historyTableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color: var(--text-muted); padding: 20px;">尚無練習紀錄。趕快開始練習吧！</td></tr>`;
             this.dom.historySummary.innerHTML = '總練習次數：0 次 | 最高 WPM：0 | 平均正確率：0%';
             return;
         }
@@ -473,18 +512,26 @@ class HsuTutorApp {
             <strong>平均正確率：</strong>${avgAcc}%
         `;
 
-        // 渲染表格
-        this.dom.historyTableBody.innerHTML = records.map(r => `
-            <tr>
-                <td>${r.date}</td>
-                <td>${r.level}</td>
-                <td><strong style="color: #10b981;">${r.wpm}</strong></td>
-                <td>${r.cpm}</td>
-                <td>${r.accuracy}%</td>
-                <td>${r.maxCombo}</td>
-                <td>${r.timeSec}s</td>
-            </tr>
-        `).join('');
+        // 渲染表格 (包含鍵盤模式 Badge)
+        this.dom.historyTableBody.innerHTML = records.map(r => {
+            const isDachen = r.layoutMode === 'dachen' || (r.layoutTitle && r.layoutTitle.includes('大千'));
+            const modeBadge = isDachen ?
+                `<span style="background: rgba(139, 92, 246, 0.2); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.4); padding: 2px 8px; border-radius: 12px; font-weight: 700; font-size: 12px;">大千鍵盤</span>` :
+                `<span style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); padding: 2px 8px; border-radius: 12px; font-weight: 700; font-size: 12px;">許氏鍵盤</span>`;
+
+            return `
+                <tr>
+                    <td>${r.date}</td>
+                    <td>${modeBadge}</td>
+                    <td>${r.level}</td>
+                    <td><strong style="color: #10b981;">${r.wpm}</strong></td>
+                    <td>${r.cpm}</td>
+                    <td>${r.accuracy}%</td>
+                    <td>${r.maxCombo}</td>
+                    <td>${r.timeSec}s</td>
+                </tr>
+            `;
+        }).join('');
     }
 
     clearHistoryRecords() {
@@ -493,23 +540,82 @@ class HsuTutorApp {
         alert('所有歷史成績紀錄已成功歸零清空！');
     }
 
+    splitTextToSentences(text) {
+        if (!text) return [];
+
+        const normalized = text.trim();
+        if (!normalized) return [];
+
+        // 依主要的句末標點 (。！？；\n…) 切分，且標點保留在該句句尾
+        const primaryChunks = normalized.split(/(?<=[。！？；\n…])/).map(s => s.trim()).filter(s => s.length > 0);
+
+        let sentences = [];
+
+        primaryChunks.forEach(chunk => {
+            if (chunk.length <= 30) {
+                sentences.push(chunk);
+            } else {
+                // 若單句超過 30 字，嘗試依逗號、頓號 (，、,) 二次切分，並讓標點留在句尾
+                const subChunks = chunk.split(/(?<=[，、,])/).map(s => s.trim()).filter(s => s.length > 0);
+                let buf = '';
+                subChunks.forEach(sub => {
+                    buf += sub;
+                    if (buf.length >= 15) {
+                        sentences.push(buf);
+                        buf = '';
+                    }
+                });
+                if (buf.length > 0) {
+                    sentences.push(buf);
+                }
+            }
+        });
+
+        // 萬一文章完全沒有標點符號且單句極長，強制依每 22 字切割
+        const finalSentences = [];
+        sentences.forEach(s => {
+            if (s.length <= 40) {
+                finalSentences.push(s);
+            } else {
+                for (let i = 0; i < s.length; i += 22) {
+                    finalSentences.push(s.substring(i, i + 22));
+                }
+            }
+        });
+
+        return finalSentences.filter(s => s.trim().length > 0).map(s => ({ sentence: s.trim() }));
+    }
+
     loadCustomArticle() {
         const text = this.dom.customTextInput.value.trim();
         if (!text) return;
 
+        const items = this.splitTextToSentences(text);
+        if (items.length === 0) return;
+
         const customLesson = {
-            title: '自訂文章練習',
+            id: 'custom_article_' + Date.now(),
+            title: `📝 自訂文章 (共 ${items.length} 句)`,
             desc: '使用者自訂輸入文章',
-            items: [{ sentence: text }]
+            items: items
         };
 
-        HSU_LESSONS.level4.push(customLesson);
+        const existingIdx = HSU_LESSONS.level4.findIndex(l => l.id && l.id.startsWith('custom_article_'));
+        if (existingIdx !== -1) {
+            HSU_LESSONS.level4[existingIdx] = customLesson;
+        } else {
+            HSU_LESSONS.level4.push(customLesson);
+        }
+
+        const targetIdx = HSU_LESSONS.level4.findIndex(l => l.id === customLesson.id);
+
         this.populateSubLessons('level4');
         this.dom.levelSelect.value = 'level4';
-        this.dom.subLessonSelect.value = HSU_LESSONS.level4.length - 1;
-        this.loadLesson('level4', HSU_LESSONS.level4.length - 1);
+        this.dom.subLessonSelect.value = targetIdx !== -1 ? targetIdx : HSU_LESSONS.level4.length - 1;
+        this.loadLesson('level4', parseInt(this.dom.subLessonSelect.value, 10));
 
         this.dom.customTextModal.classList.remove('is-open');
+        if (document.activeElement) document.activeElement.blur();
     }
 }
 
